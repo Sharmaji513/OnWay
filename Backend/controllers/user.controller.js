@@ -74,8 +74,8 @@ module.exports.loginUser = async (req, res, next) => {
 
         // Generate token
         const token = user.generateAuthToken();
-        res.cookie('token', token);
-     
+        // res.cookie('token', token);
+        res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
         res.status(200).json({message: "Login successful", token, user });
 
     } catch (error) {
@@ -88,3 +88,20 @@ module.exports.loginUser = async (req, res, next) => {
 module.exports.getUserProfile = async (req,res,next) =>{
     res.status(200).json(req.user);
 }
+
+
+//logout
+module.exports.logoutUser = async (req, res, next) => {
+    try {
+      // Clear the cookie
+      res.cookie("token", "", {
+        expires: new Date(0), // Set expiration date to the past
+        httpOnly: true, // Make it accessible only via HTTP
+      });
+  
+      // Send success response
+      res.status(200).json({ message: "User logged out successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
