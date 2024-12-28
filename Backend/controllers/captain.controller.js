@@ -65,3 +65,24 @@ module.exports.loginCaptain = async (req, res, next) => {
 
 
 
+// getUserProfile
+module.exports.getCaptainProfile = async (req,res,next) =>{
+  res.status(200).json(req.captain);
+}
+
+
+//logout
+module.exports.logoutCaptain = async (req, res, next) => {
+  try {
+    // Clear the cookie
+    res.cookie("token", "", {
+      expires: new Date(0), // Set expiration date to the past
+      httpOnly: true, // Make it accessible only via HTTP
+    });
+
+    // Send success response
+    res.status(200).json({ message: "captain logged out successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
