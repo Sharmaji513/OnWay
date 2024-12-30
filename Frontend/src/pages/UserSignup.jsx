@@ -27,7 +27,7 @@ const UserSignup = () => {
   };
   // console.log(userData);
 
-
+  
   return (
     <div className="md:max-w-screen-md mx-auto ">
       <div className="p-7 h-screen flex flex-col justify-center items-center md:max-w-screen-sm  mx-auto">
