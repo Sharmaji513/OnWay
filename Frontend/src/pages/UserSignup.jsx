@@ -1,33 +1,54 @@
+import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { addUser } from "../utils/userSlice";
 
 const UserSignup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState({});
 
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    setUserData({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
+    try {
+      const newUserData = {
+        fullname: {
+          firstname: firstName,
+          lastname: lastName,
+        },
+        email: email,
+        password: password,
+      };
 
-    setFirstName("")
-    setLastName("")
-    setEmail("");
-    setPassword("");
+
+      const response = await axios.post( `${import.meta.env.VITE_API_URL}/users/register`, newUserData);
+
+      if ((response.status = 200)) {
+        const data = response.data;
+        dispatch(addUser(data.user));
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
+
+      
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.log(error);
+      alert("Please enter Correct filed");
+    }
   };
   // console.log(userData);
 
-  
   return (
     <div className="md:max-w-screen-md mx-auto ">
       <div className="p-7 h-screen flex flex-col justify-center items-center md:max-w-screen-sm  mx-auto">
@@ -89,15 +110,21 @@ const UserSignup = () => {
           <Link to="/login" className="text-blue-600">
             Login here
           </Link>
-    
-        <p className="text-[10px] leading-tight mt-10">
-          This site is protected by reCAPTCHA and the 
-          <span className="underline text-gray-400"> Google Privacy Policy</span> and
-          <span className="underline text-gray-400"> Terms of Service apply</span>.
-        </p>
+          <p className="text-[10px] leading-tight mt-10">
+            This site is protected by reCAPTCHA and the
+            <span className="underline text-gray-400">
+              {" "}
+              Google Privacy Policy
+            </span>{" "}
+            and
+            <span className="underline text-gray-400">
+              {" "}
+              Terms of Service apply
+            </span>
+            .
+          </p>
         </p>
       </div>
-   
     </div>
   );
 };

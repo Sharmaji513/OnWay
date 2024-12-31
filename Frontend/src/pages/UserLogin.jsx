@@ -1,25 +1,48 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState({});
 
-  
-  const submitHandler = (e) => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
+
+    
     e.preventDefault();
 
-    setUserData({
-      email,
-      password,
-    });
+    try {
 
-    setEmail("");
-    setPassword("");
+      const userData = {
+        email: email,
+        password: password,
+      };
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, userData);
+      console.log(response);
+  
+      if (response.status === 200) {
+        const data = response.data;
+        dispatch(addUser(data.user));
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+  
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Failed to login. Please check your credentials and try again.");
+    }
   };
-
-    // console.log(userData);
+  
+ 
     
   return (
     <div className="md:max-w-screen-md mx-auto ">
