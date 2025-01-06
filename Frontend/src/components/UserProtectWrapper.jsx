@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const UserProtectWrapper = ({ children }) => {
-  console.log("children data : ",children);
+  // console.log("children data : ",children);
   
   const token = localStorage.getItem('token'); // Get the token from localStorage directly
   const navigate = useNavigate();

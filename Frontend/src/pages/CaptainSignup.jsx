@@ -1,6 +1,9 @@
+import axios from 'axios'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 
+import {addCaptain} from "../utils/captainSlice"
 
 const CaptainSignup = () => {
 
@@ -14,36 +17,53 @@ const CaptainSignup = () => {
   const [ vehicleCapacity, setVehicleCapacity ] = useState('')
   const [ vehicleType, setVehicleType ] = useState('')
 
-
+const dispatch = useDispatch()
+const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault()
 
-    const captainData = {
-      fullname: {
-        firstname: firstName,
-        lastname: lastName
-      },
-      email: email,
-      password: password,
-      vehicle: {
-        color: vehicleColor,
-        plate: vehiclePlate,
-        capacity: vehicleCapacity,
-        vehicleType: vehicleType
+    try {
+      const captainData = {
+        fullname: {
+          firstname: firstName,
+          lastname: lastName
+        },
+        email: email,
+        password: password,
+        vehicle: {
+          color: vehicleColor,
+          plate: vehiclePlate,
+          capacity: vehicleCapacity,
+          vehicleType: vehicleType
+        }
       }
+  
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/captains/register`, captainData)
+      console.log(response);
+  
+      if(response.status = 200){
+        const data = response.data;
+        dispatch(addCaptain(data))
+         localStorage.setItem("token", data.token);
+          navigate("/captain-home");
+      }
+      
+      setEmail('')
+      setFirstName('')
+      setLastName('')
+      setPassword('')
+      setVehicleColor('')
+      setVehiclePlate('')
+      setVehicleCapacity('')
+      setVehicleType('')
+
+    } catch (error) {
+      console.log(error);
+      alert("Please enter Correct filed"); 
     }
 
-    console.log(captainData);
     
-    setEmail('')
-    setFirstName('')
-    setLastName('')
-    setPassword('')
-    setVehicleColor('')
-    setVehiclePlate('')
-    setVehicleCapacity('')
-    setVehicleType('')
 
   }
   return (

@@ -1,26 +1,52 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom'
+
+import {addCaptain} from "../utils/captainSlice"
+import { useDispatch } from 'react-redux'
+import axios from 'axios'
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState({});
 
-  
-  const submitHandler = (e) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    setUserData({
-      email,
-      password,
-    });
+    try {
 
-    setEmail("");
-    setPassword("");
+      const captainData = {
+        email : email,
+        password: password
+      }
+
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/captains/login` , captainData)
+      // console.log(response);
+      
+
+      if(response.status === 200){
+        const data = response.data
+        dispatch(addCaptain(data.captain))
+        localStorage.setItem("token", data.token);
+        navigate('/captain-home')
+
+      }
+
+      setEmail("");
+      setPassword("");
+
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Failed to login. Please check your credentials and try again.");
+    }
+  
   };
 
-    // console.log(userData);
-    
+  // console.log(userData);
+
   return (
     <div className="md:max-w-screen-md mx-auto w-full">
       <div className="p-7 h-screen flex flex-col justify-center items-center">
@@ -31,7 +57,7 @@ const CaptainLogin = () => {
         />
         <h1 className="text-3xl  text-black font-bold mb-4 ">myCab</h1>
         <h1 className="text-[4vw] md:text-[1vw]  text-zinc-700 font-bold mb-12 uppercase">
-        "Be the Captain of Change"
+          "Be the Captain of Change"
         </h1>
         <form onSubmit={(e) => submitHandler(e)}>
           <h3 className="text-lg font-medium mb-2">What's your email</h3>
