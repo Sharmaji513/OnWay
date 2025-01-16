@@ -1,6 +1,9 @@
 import React from "react";
 
-const LocationSearchPanel = () => {
+const LocationSearchPanel = (props) => {
+
+  console.log(props);
+  
   const locations = [
     "Block D, Sector 7, Rohini, Delhi, 110085",
     "Pocket 9, Sector 21, Rohini, Delhi, 110086",
@@ -12,9 +15,13 @@ const LocationSearchPanel = () => {
   ];
   return (
     // this is sample data
-    <div className="p-2  md:max-w-screen-sm flex flex-col mt-5 ">
-      {locations.map((item) => (
-        <div className="flex items-center justify-between cursor-pointer">
+    <div  className="p-2  md:max-w-screen-sm flex flex-col mt-5 ">
+      {locations.map((item , index) => (
+        <div key={index} onClick={()=>{
+          props.setVehiclePanel(true)
+          props.setPanelOpen(false)
+         
+        }} className="flex items-center justify-between cursor-pointer">
             <div><i class="ri-map-pin-fill"></i></div>
         <div className=" w-full p-5 border-b-2 border-zinc-200 shadow-sm font-semibold  ">{item}    
              
