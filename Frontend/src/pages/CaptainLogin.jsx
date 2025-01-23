@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
 const CaptainLogin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sachin@example.com");
+  const [password, setPassword] = useState("sachin@12345");
 
   const dispatch = useDispatch()
   const navigate = useNavigate();
